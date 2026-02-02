@@ -17,7 +17,7 @@ public class Network {
     }
 
   public Host getHostByName(String hostName) {
-    return hosts.stream().filter(h -> h.getHostName().equalsIgnoreCase(hostName)).findFirst().orElse(null);
+    return hosts.stream().filter(h -> h.getHostName().equalsIgnoreCase(hostName.trim())).findFirst().orElse(null);
   }
 
   public boolean addHost(Host host) {

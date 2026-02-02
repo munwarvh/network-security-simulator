@@ -98,6 +98,10 @@ class NetworkTest {
         // Check retrieval by hostname (case insensitive and trimmed)
         assertNotNull(network.getHostByName("   HOST-IPv4   "));
         assertNotNull(network.getHostByName("   host-ipv6  "));
+
+        // Cleanup
+        network.removeHost(ipv4Host);
+        network.removeHost(ipv6Host);
     }
 
     @Test
@@ -112,8 +116,18 @@ class NetworkTest {
         network.addHost(ipv4Host);
         network.addHost(ipv6Host);
 
-        // Ensure that IPv4 cannot retrieve IPv6 host and vice versa
-        assertNull(network.getHostByIp((InetAddress) Inet4Address.getByName("2001:db8::1"))); // Should be null
-        assertNull(network.getHostByIp((InetAddress) Inet6Address.getByName("192.168.1.1"))); // Should be null
+        // Ensure that querying with a different IP address (but correct type) returns null
+        // Query for a different IPv4 address (not the one we added)
+        assertNull(network.getHostByIp(Inet4Address.getByName("192.168.1.2")));
+        // Query for a different IPv6 address (not the one we added)
+        assertNull(network.getHostByIp(Inet6Address.getByName("2001:db8::2")));
+
+        // Verify the original addresses still work correctly
+        assertNotNull(network.getHostByIp(ipv4Address));
+        assertNotNull(network.getHostByIp(ipv6Address));
+
+        // Cleanup
+        network.removeHost(ipv4Host);
+        network.removeHost(ipv6Host);
     }
 }
